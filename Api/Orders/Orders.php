@@ -35,13 +35,13 @@ switch ($_SERVER["REQUEST_METHOD"]) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($data['name']) && isset($data['email']) && isset($data['address']) && isset($data['shopId'])) {
+        if (isset($data['name']) && isset($data['email']) && isset($data['address'])) {
 
             // INSERT INTO `products` (`id`, `title`, `description`, `price`, `imageUrl`, `menuId`) 
             // VALUES (NULL, 'porudjaksjd', 'qwewqeqwe', '151.00', 'dasd', '00');
             // SELECT id FROM `categories` ORDER BY id DESC LIMIT 1;
-            $sql = "INSERT INTO `orders` (`id`, `name`, `email`, `address`, `date`, `shopId`) 
-            VALUES (NULL, '{$data['name']}', '{$data['email']}', '{$data['address']}', now(), '{$data['shopId']}')";
+            $sql = "INSERT INTO `orders` (`id`, `name`, `email`, `address`, `date`) 
+            VALUES (NULL, '{$data['name']}', '{$data['email']}', '{$data['address']}', now())";
 
             if ($conn->query($sql)) {
                 $id = $conn->query("SELECT id FROM `orders` ORDER BY id DESC LIMIT 1")->fetch_assoc()['id'];

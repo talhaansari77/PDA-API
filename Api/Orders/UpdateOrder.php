@@ -12,12 +12,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = isset($data["email"]) ? $data["email"] : "null";
     $address = isset($data["address"]) ? $data["address"] : "null";
     $date = isset($data["date"]) ? $data["date"] : "null";
-    $shopId = isset($data["shopId"]) ? $data["shopId"] : "null";
+    // $shopId = isset($data["shopId"]) ? $data["shopId"] : "null";
 
    
     if ($id) {
         if ($conn->query("SELECT * FROM orders WHERE id={$id}")->num_rows > 0) {
-            $sql = "UPDATE `orders` SET `name` = '$name', `email` = '$email', `address` = '$address', `date` = '$date', `shopId` = '$shopId' WHERE `id` =" . $id;
+            $sql = "UPDATE `orders` SET `name` = '$name', `email` = '$email', `address` = '$address', `date` = '$date' WHERE `id` =" . $id;
              
             if ($conn->query($sql)) {
                 echo  json_encode(array(
