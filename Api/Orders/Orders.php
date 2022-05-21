@@ -35,7 +35,7 @@ switch ($_SERVER["REQUEST_METHOD"]) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($data['name']) && isset($data['email']) && isset($data['address'])) {
+        if (isset($data['name']) && isset($data['email']) && isset($data['address']) && intval($data['total']) > 0) {
 
             // INSERT INTO `products` (`id`, `title`, `description`, `price`, `imageUrl`, `menuId`) 
             // VALUES (NULL, 'porudjaksjd', 'qwewqeqwe', '151.00', 'dasd', '00');

@@ -4,6 +4,7 @@ header("Access-Control-Allow-Origin:*");
 
 include_once "../../Connection/config.php";
 
+// print_r( json_decode('{"1":"failed","2":[1,2,3]}', true));
 switch ($_SERVER["REQUEST_METHOD"]) {
         // Get Shops
     case 'GET':
@@ -35,28 +36,31 @@ switch ($_SERVER["REQUEST_METHOD"]) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($data['name']) && isset($data['email']) && isset($data['address']) && isset($data['shopId'])) {
-            $selectedItems = json_decode($data['selectedItems'], true);
-            echo json_encode($selectedItems);
-            // INSERT INTO `orderdetail` (`id`, `title`, `description`, `cost`, `price`, `type`, `status`, `imageUrl`, `orderId`) 
-            // VALUES (NULL, 'New Hotal 2qwe', 'Quo provident Nam e', '00', '128.00', 'Aute facilis non nul', 'Active', 'Eius rem dolor dicta', '0');
-            // $sql = "INSERT INTO `orders` (`id`, `name`, `email`, `address`, `date`, `shopId`) 
-            // VALUES (NULL, '{$data['name']}', '{$data['email']}', '{$data['address']}', now(), '{$data['shopId']}')";
+        if (isset($data['selectedItems'])  && isset($data['orderId'])) {
 
-            // if ($conn->query($sql)) {
-            //     $id = $conn->query("SELECT id FROM `orderdetail` ORDER BY id DESC LIMIT 1")->fetch_assoc()['id'];
+            //error counter
+            $errors = 0;
+            //cartItems
+            $cartItems = json_decode(json_encode($data['selectedItems']));
+            foreach ($cartItems as $item) {
+                $cost = $item->cost ? $item->cost : 0;
+                $sql = "INSERT INTO `orderdetail` (`id`, `title`, `description`, `qty`,`cost`, `price`, `type`, `status`, `imageUrl`, `orderId`, `shopId`) 
+                VALUES (NULL, '{$item->title}', '{$item->description}', '1', '{$cost}', '{$item->price}', '{$item->catName}', 'pending', '{$item->imageUrl}', '{$data['orderId']}', '{$item->shopId}')";
+                //Store
+                $errors = $conn->query($sql)? $errors : $errors + 1;
+            }
 
-            //     echo  json_encode(array(
-            //         'id' => $id,
-            //         'Message' => "orderdetail is Created",
-            //         'status' => true
-            //     ));
-            // } else {
-            //     echo  json_encode(array(
-            //         'Message' => "There Was Some Error While Creating The orderdetail",
-            //         'status' => false
-            //     ));
-            // }
+            if ($errors==0) {             
+                echo  json_encode(array(
+                    'Message' => "Order Registered Successfully",
+                    'status' => true
+                ));
+            } else {
+                echo  json_encode(array(
+                    'Message' => "There were {$errors} Error While Creating The Order",
+                    'status' => false
+                ));
+            }
         } else {
             echo  json_encode(array(
                 'Message' => "The Form was Not Filled Correctly",

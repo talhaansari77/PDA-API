@@ -6,11 +6,13 @@ include_once "../../Connection/config.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (isset($data['email'])) {
+if (isset($data['shopId'])) {
 
-    $email = $data['email'];
+    $shopId = $data['shopId'];
 
-    $sql = "SELECT * FROM `orders` WHERE email='{$email}' ORDER BY date DESC";
+    $sql = "SELECT orders.*,orderdetail.shopId from orders, orderdetail 
+    WHERE orders.id = orderdetail.orderId AND orderdetail.shopId = {$shopId} 
+    GROUP BY orderdetail.orderId";
 
     $result = $conn->query($sql);
 
