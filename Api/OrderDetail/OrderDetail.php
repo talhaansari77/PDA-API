@@ -19,8 +19,22 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                     'status' => false
                 ));
             }
+        } else if (isset($_GET['orderId']) && isset($_GET['shopId'])) {
+            $result = $conn->query("SELECT * FROM orderdetail WHERE orderId = {$_GET['orderId']} AND shopId = {$_GET['shopId']}");
+
+            if ($result->num_rows > 0) {
+                echo  json_encode(array(
+                    'orders' => $result->fetch_all(MYSQLI_ASSOC),
+                    'status' => true
+                ));
+            } else {
+                echo  json_encode(array(
+                    'Message' => "Not Found",
+                    'status' => false
+                ));
+            }
         } else if (isset($_GET['orderId'])) {
-            $result = $conn->query("SELECT * FROM orderdetail WHERE orderId = {$_GET['orderId']}");
+            $result = $conn->query("SELECT * FROM orderdetail WHERE orderId = {$_GET['orderId']} ");
 
             if ($result->num_rows > 0) {
                 echo  json_encode(array(
