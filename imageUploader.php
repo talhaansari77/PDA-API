@@ -18,13 +18,13 @@ if (is_uploaded_file($_FILES["picture"]["tmp_name"])) {
     # this is the actual destination from you take the file and move it.
     $file_destination = "Uploads/imgs/" . $file_new_name;
     $file_destinationG = "https://".$_SERVER['SERVER_NAME']."/".$file_destination;
-    # uploading here
+    # change database column name to the one you want to save the file name in.
     if($table == "users"){
         $image="picture";
     } else if($table == "shops"){
         $image = "imageUrls";
     }
-    
+    # uploading here
     if (move_uploaded_file($file_temp, $file_destination)) {
         // Upadting Image
         $sql = "UPDATE ".$table." SET  ".$image."='$file_destinationG' WHERE `id` =" . $id;

@@ -19,6 +19,20 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                     'status' => false
                 ));
             }
+        } else if (isset($_GET['orderId'])) {
+            $result = $conn->query("SELECT * FROM orderdetail WHERE orderId = {$_GET['orderId']}");
+
+            if ($result->num_rows > 0) {
+                echo  json_encode(array(
+                    'orders' => $result->fetch_all(MYSQLI_ASSOC),
+                    'status' => true
+                ));
+            } else {
+                echo  json_encode(array(
+                    'Message' => "Not Found",
+                    'status' => false
+                ));
+            }
         } else {
             $result = $conn->query("SELECT * FROM orderdetail");
 
@@ -47,10 +61,10 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                 $sql = "INSERT INTO `orderdetail` (`id`, `title`, `description`, `qty`,`cost`, `price`, `type`, `status`, `imageUrl`, `orderId`, `shopId`) 
                 VALUES (NULL, '{$item->title}', '{$item->description}', '1', '{$cost}', '{$item->price}', '{$item->catName}', 'pending', '{$item->imageUrl}', '{$data['orderId']}', '{$item->shopId}')";
                 //Store
-                $errors = $conn->query($sql)? $errors : $errors + 1;
+                $errors = $conn->query($sql) ? $errors : $errors + 1;
             }
 
-            if ($errors==0) {             
+            if ($errors == 0) {
                 echo  json_encode(array(
                     'Message' => "Order Registered Successfully",
                     'status' => true
