@@ -20,6 +20,10 @@ switch ($_SERVER["REQUEST_METHOD"]) {
                 ));
             }
         } else if (isset($_GET['orderId']) && isset($_GET['shopId'])) {
+            // SELECT orders.*,orderdetail.shopId from orders, orderdetail 
+            // WHERE orders.id = orderdetail.orderId AND orderdetail.shopId = 1 
+            // AND orderdetail.status in (SELECT `status` FROM orderdetail 
+            // WHERE status="pending") GROUP BY orderdetail.orderId
             $result = $conn->query("SELECT * FROM orderdetail WHERE orderId = {$_GET['orderId']} AND shopId = {$_GET['shopId']}");
 
             if ($result->num_rows > 0) {

@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
     if ($id) {
         if ($conn->query("SELECT * FROM shops WHERE id={$id}")->num_rows > 0) {
-            $sql = "UPDATE `shops` SET `title` = '$title', `imageUrls` = '$imageUrls',`menuId` = '$menuId', `address` = '$address', `categoryName` = '$categoryName', `website` = '$website', `phone` = '$phone', `temporarilyClosed` = '$temporarilyClosed', `location` = '$location',`url` = '$url', `totalScore` = '$totalScore', `reviewCount` = '$reviewCount' WHERE `id` =" . $id;
+            $sql = "UPDATE `shops` SET `title` = '$title', `imageUrls` = `imageUrls`,`menuId` = '$menuId', `address` = '$address', `categoryName` = '$categoryName', `website` = '$website', `phone` = '$phone', `temporarilyClosed` = '$temporarilyClosed', `location` = '$location',`url` = '$url', `totalScore` = '$totalScore', `reviewCount` = '$reviewCount' WHERE `id` =" . $id;
              
             if ($conn->query($sql)) {
                 echo  json_encode(array(

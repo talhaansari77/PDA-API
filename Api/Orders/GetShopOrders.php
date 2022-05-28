@@ -6,13 +6,19 @@ include_once "../../Connection/config.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (isset($data['shopId'])) {
-
+if (isset($data['shopId']) && isset($data['status'])) {
+    // SELECT orders.*,orderdetail.shopId from orders, orderdetail 
+    // WHERE orders.id = orderdetail.orderId AND orderdetail.shopId = {$shopId} 
+    // AND orderdetail.status in (SELECT `status` FROM orderdetail 
+    // WHERE status={$status}) GROUP BY orderdetail.orderId
+    
     $shopId = $data['shopId'];
+    $status = $data['status'];
 
     $sql = "SELECT orders.*,orderdetail.shopId from orders, orderdetail 
     WHERE orders.id = orderdetail.orderId AND orderdetail.shopId = {$shopId} 
-    GROUP BY orderdetail.orderId";
+    AND orderdetail.status in (SELECT `status` FROM orderdetail 
+    WHERE status='{$status}') GROUP BY orderdetail.orderId";
 
     $result = $conn->query($sql);
 
