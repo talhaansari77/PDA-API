@@ -76,8 +76,9 @@ switch ($_SERVER["REQUEST_METHOD"]) {
             $cartItems = json_decode(json_encode($data['selectedItems']));
             foreach ($cartItems as $item) {
                 $cost = $item->cost ? $item->cost : 0;
+                $price=$item->qty * $item->price;
                 $sql = "INSERT INTO `orderdetail` (`id`, `title`, `description`, `qty`,`cost`, `price`, `type`, `status`, `imageUrl`, `orderId`, `shopId`) 
-                VALUES (NULL, '{$item->title}', '{$item->description}', '1', '{$cost}', '{$item->price}', '{$item->catName}', 'pending', '{$item->imageUrl}', '{$data['orderId']}', '{$item->shopId}')";
+                VALUES (NULL, '{$item->title}', '{$item->description}', '{$item->qty}', '{$price}', '{$item->catName}', 'pending', '{$item->imageUrl}', '{$data['orderId']}', '{$item->shopId}')";
                 //Store
                 $errors = $conn->query($sql) ? $errors : $errors + 1;
             }

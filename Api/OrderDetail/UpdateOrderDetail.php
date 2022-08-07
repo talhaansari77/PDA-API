@@ -6,37 +6,41 @@ include_once "../../Connection/config.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = json_decode(file_get_contents("php://input"), true);
-    // validating if creds are empty
-    $id = isset($data["id"]) ? $data["id"] : "null";
-    $name = isset($data["name"]) ? $data["name"] : "null";
-    $email = isset($data["email"]) ? $data["email"] : "null";
-    $address = isset($data["address"]) ? $data["address"] : "null";
-    $date = isset($data["date"]) ? $data["date"] : "null";
-    $shopId = isset($data["shopId"]) ? $data["shopId"] : "null";
+    // validating if orderList are empty
+    if (isset($data['orderList'])) {
+        // orderLIst To Update OrderDetail
+        $orderList = json_decode(json_encode($data['orderList']));
+        $status = $data['status'];
+        //error counter
+        $errors = 0;
+        foreach ($orderList as $order) {
+            $cost = $order->cost ? $order->cost : 0;
+            //making query to update orderDetail
+            $sql = "UPDATE `orderdetail` SET `title` = '{$order->title}', 
+            `description` = '{$order->description}', `qty` = '{$order->qty}', `cost` = '{$cost}', 
+            `price` = '{$order->price}', `type` = '{$order->type}', `status` = '{$status}', 
+            `imageUrl` = '{$order->imageUrl}', `orderId` = '{$order->orderId}', `shopId` = '{$order->shopId}'  
+            WHERE `id` =" . $order->id;
+            //Store while checking error 
+            $errors = $conn->query($sql) ? $errors : $errors + 1;
+        }
 
-   
-    if ($id) {
-        if ($conn->query("SELECT * FROM orders WHERE id={$id}")->num_rows > 0) {
-            $sql = "UPDATE `orders` SET `name` = '$name', `email` = '$email', `address` = '$address', `date` = '$date', `shopId` = '$shopId' WHERE `id` =" . $id;
-             
-            if ($conn->query($sql)) {
-                echo  json_encode(array(
-                    'Message' => "order Updated",                    
-                    'id' => $id,
-                    'status' => true
-                ));
-            } else {
-                echo  json_encode(array(
-                    'Message' => "There Was Some Error While Updating The order",
-                    'status' => false
-                ));
-            }
+        if ($errors == 0) {
+            echo  json_encode(array(
+                'Message' => "Orders Updated Successfully",
+                'status' => true
+            ));
         } else {
             echo  json_encode(array(
-                'Message' => "Not Found",
+                'Message' => "There were {$errors} Error While Updating The Order",
                 'status' => false
             ));
         }
+    } else {
+        echo  json_encode(array(
+            'Message' => "Not Found",
+            'status' => false
+        ));
     }
 } else {
     echo  json_encode(array(
